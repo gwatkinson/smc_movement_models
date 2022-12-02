@@ -11,6 +11,8 @@ Projet pour le cours **Hidden Markov models and Sequential Monte-Carlo methods**
 
 Dans ce projet, nous implementons le modèle décrit dans le papier [Estimating behavioral parameters in animal movement models using a state-augmented particle filter](https://dalspace.library.dal.ca/bitstream/handle/10222/33464/Dowd_et_al-2011-Ecology.pdf), et l'approfondissons avec des méthodes plus récentes.
 
+Pour aller plus loin, ce papier propose un algorithme plus récent: [Mixture Kalman filters](https://api.istex.fr/ark:/67375/WNG-STH7JZLH-T/fulltext.pdf?auth=ip,fede&sid=google,istex-view)
+
 ### Plan
 
 * [ ] Récupérer/simuler les données
