@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "smc-movement-models"
+version = "0.1.0"
+description = "Projet pour le cours **Hidden Markov models and Sequential Monte-Carlo methods** de l'ENSAE."
+authors = [
+    "Gabriel Watkinson <gabriel.watkinson@gmail.com>",
+    "Gabriel Guaquiere <gabriel.guaquiere@ensae.fr>",
+    "Jérémie Stym-Popper <jeremie.stym-popper@ensae.fr>",
+    "Benjamin Maurel <benjamin.maurel@ensae.fr>"
+    ]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "smc_movement_models"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+# Scientific packages
+numpy = "^1.23.5"
+scipy = "^1.9.3"
+particles = "^0.3"
+pandas = "^1.5.2"
+# Plottin packages
+matplotlib = "^3.6.2"
+seaborn = "^0.12.1"
+plotly = "^5.11.0"
+# Environment packages
+jupyter = "^1.0.0"
+notebook = "^6.5.2"
+
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^2.20.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
