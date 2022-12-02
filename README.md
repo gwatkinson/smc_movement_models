@@ -30,6 +30,16 @@ Avant toutes choses, se déplacer dans le dossier `SMC_movement_models`:
 cd /path/to/SMC_movement_models
 ```
 
+#### Avec [`poetry`](https://python-poetry.org/)
+```bash
+# Creation d'un environement virtuel et installation des packages
+poetry install
+
+# Activation de l'environement
+poetry shell  # sub shell
+# OU source $(poetry env info --path)/bin/activate  # activer l'environement dans le shell actuel
+```
+
 #### Avec `pip`
 ```bash
 # Creation d'un environement virtuel
