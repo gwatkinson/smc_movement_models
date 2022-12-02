@@ -63,6 +63,11 @@ pre-commit run --all-files  # Pour installer les modules et lancer les tests
 
 ![Exemple de pre-commit](images/pre-commit-exemple.png)
 
+Pour forcer un commit sans vérifier :
+```bash
+git commit -m "..." --no-verify
+```
+
 ### Architecture du projet
 
 ```bash
