@@ -25,9 +25,9 @@ Nous utilisons Python pour simuler les données et mettre en place les modèles,
 
 ### Installation
 
-Avant toutes choses, se déplacer dans le dossier `SMC_movement_models`:
+Avant toutes choses, il faut se déplacer dans le dossier `smc_movement_models`:
 ```bash
-cd /path/to/SMC_movement_models
+cd /path/to/smc_movement_models
 ```
 
 #### Avec [`poetry`](https://python-poetry.org/)
