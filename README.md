@@ -73,6 +73,8 @@ smc_movement_models
 ├── environement.yml
 ├── images
 │   └── ...
+├── notebooks
+│   └── first_implementation.ipynb
 └── smc_movement_models
     ├── data_generation.py  # Sctipt to generate the data
     ├── models.py  # Implement the models
