@@ -61,16 +61,9 @@ pre-commit install
 pre-commit run --all-files  # Pour installer les modules et lancer les tests
 ```
 
-### Modules
+![Exemple de pre-commit](images/pre-commit-exemple.png)
 
-Architecture du projet :
-
-* smc_movement_models
-  * smc_movement_models
-  * README.md
-  * requirements.txt
-  * environement.yml
-
+### Architecture du projet
 
 ```bash
 smc_movement_models
