@@ -86,7 +86,7 @@ $$
 \end{equation}
 $$
 avec
-* $z_t$ la vitesse verticale en $t$ (a portion of \tilde{\bm{x}}_t).
+* $z_t$ la vitesse verticale en $t$ (une partie de $\tilde{\bm{x}}_t$).
 * $a_1$ et $a_2$ les paramètres du modèle $AR(2)$.
 * $\varepsilon_t$ le bruit du système pûrement Gaussien.
 
@@ -129,6 +129,13 @@ On a ainsi
 \end{pmatrix}$
 * $\tilde{\bm{n}}_t = \begin{pmatrix}
     \varepsilon_t \\ 0 \\ \nu_{1, t} \\ \nu_{2, t}
+\end{pmatrix}$
+* Ce qui donne : $\tilde{\bm{x}}_t = \tilde{\bm{G}}_{t -1} \tilde{\bm{x}}_{t-1} + \tilde{\bm{n}}_t$
+* Avec $\tilde{\bm{G}}_{t -1} = \begin{pmatrix}
+    a_{1, t-1} & a_{2, t-1} & 0 & 0 \\
+    1 & 0 & 0 & 0 \\
+    0 & 0 & 1 & 0 \\
+    0 & 0 & 0 & 1
 \end{pmatrix}$
 * $\tilde{\bm{H}} = \begin{pmatrix}
     1 & 0 & 0 & 0
