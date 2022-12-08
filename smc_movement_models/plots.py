@@ -39,7 +39,8 @@ def plot_graph_values(figsize=(10, 10)):
 def plot_real_data(path, figsize=(10, 10)):
     fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=figsize)
 
-    df = pd.read_csv(path, sep="\t")
+    df = pd.read_csv(path)
+    df["Dtime"] = pd.to_datetime(df["Dtime"])
 
     df.plot(x="Dtime", y="Velocity", ax=ax1)
     df.plot(x="Dtime", y="Depth", ax=ax2)
