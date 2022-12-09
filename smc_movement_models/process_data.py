@@ -1,21 +1,52 @@
-"""Module pour nettoyer les données."""
+"""Module pour nettoyer les données.
+
+Usage:
+    python smc_movement_models/process_data.py
+"""
 
 import click
 import pandas as pd
 
 RAW_DATA_PATH = "./data/4121_filtervelocity_PostThesis.csv"
+DAY = "19/01/2008"
+DAY_PATH = "./data/19_01_2008.csv"
 OUTPUT_TOTAL_PATH = "./data/clean_data.csv"
 SUMMARY_PATH = "./data/summary.csv"
 
-DAY = "19/01/2008"
-
 
 @click.command()
-@click.option("-p", "--path", default=RAW_DATA_PATH, help="Path to raw data")
-@click.option("-d", "--day", default=DAY, help="Day to keep")
-@click.option("-t", "--output-total", default=OUTPUT_TOTAL_PATH, help="Path to output total data")
-@click.option("-s", "--summary-path", default=SUMMARY_PATH, help="Path to output summary data")
-def clean_raw_data(path, day, output_total, summary_path):
+@click.option(
+    "-p", "--path", default=RAW_DATA_PATH, help="Path to raw data", prompt="Path to original data"
+)
+@click.option(
+    "-d",
+    "--day",
+    default=DAY,
+    help="Day to keep",
+    prompt="Which day to keep (from 14/01/2008 to 28/01/2008) ?",
+)
+@click.option(
+    "-o",
+    "--day-path",
+    default=DAY_PATH,
+    help="Path to output day data",
+    prompt="Name of output day file",
+)
+@click.option(
+    "-t",
+    "--output-total",
+    default=OUTPUT_TOTAL_PATH,
+    help="Path to output total data",
+    prompt="Name of output clean file",
+)
+@click.option(
+    "-s",
+    "--summary-path",
+    default=SUMMARY_PATH,
+    help="Path to output summary data",
+    prompt="Name of output summary file",
+)
+def clean_raw_data(path, day, output_total, summary_path, day_path):
     # Raw data
     click.echo(f"Reading raw data from: {path}")
     df = pd.read_csv(path)
@@ -30,9 +61,8 @@ def clean_raw_data(path, day, output_total, summary_path):
     # Day data
     mask_day = df["Date"] == day
     day_df = df.loc[mask_day, ["Dtime", "Velocity", "Depth"]]
-    output_day = f"./data/{'_'.join(day.split('/'))}.csv"
-    click.echo(f"Saving day data to: {output_day}")
-    day_df.to_csv(output_day, index=False)
+    click.echo(f"Saving day data to: {day_path}")
+    day_df.to_csv(day_path, index=False)
 
     # Summary
     nan_sum = lambda x: x.isnull().sum()
