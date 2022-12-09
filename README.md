@@ -21,6 +21,24 @@ Pour aller plus loin, ce papier propose un algorithme plus récent: [Mixture Kal
 * [ ] Appliquer Kalman aux données si on a le temps
 * [ ] Comparer et critiquer les résultats
 
+## Commandes
+
+### Process des données
+
+```python
+python smc_movement_models/data_generation.py
+# Pour plus d'informations
+# python smc_movement_models/data_generation.py --help
+```
+### Styler le code R
+
+```bash
+# Rscript -e "install.packages(c('styler', 'lintr'))"  # pour installer les packages
+Rscript -e "styler::style_file('original_code.R')"  # To format
+Rscript -e "lintr::lint('original_code.R')"  # To lint
+```
+
+
 ## Mise en place
 
 Nous utilisons Python pour simuler les données et mettre en place les modèles, notamment la librairie [particles](https://github.com/nchopin/particles).
