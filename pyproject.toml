@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "smc-movement-models"
 version = "0.1.0"
-description = "Projet pour le cours **Hidden Markov models and Sequential Monte-Carlo methods** de l'ENSAE."
+description = "Projet pour le cours Hidden Markov models and Sequential Monte-Carlo methods de l'ENSAE."
 authors = [
     "Gabriel Watkinson <gabriel.watkinson@gmail.com>",
     "Gabriel Guaquiere <gabriel.guaquiere@ensae.fr>",
