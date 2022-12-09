@@ -18,8 +18,16 @@ repos:
     -   id: name-tests-test
     -   id: check-added-large-files
 
+# -   repo: https://github.com/lorenzwalthert/precommit
+#     rev: v0.3.2.9003
+#     hooks:
+#     - id: style-files
+#     - id: parsable-R
+#     - id: lintr
+#       args: [--warn-only]
+
 -   repo: https://github.com/ambv/black
-    rev: 22.10.0
+    rev: 22.12.0
     hooks:
     - id: black
       args: ["--line-length=100"]
