@@ -18,5 +18,89 @@ Examples:
     ```
 
 .. _particles:
-   https://github.com/nchopin/particles
+    https://github.com/nchopin/particles
 """
+
+from particles.distributions import ProbDist, Categorical
+
+import scipy as sp
+import numpy as np
+
+from particles.distributions import Normal, IndepProd
+import particles.state_space_models as ssms
+
+
+class Mixture(ProbDist):
+    """Mixture distributions.
+    Parameters
+    ----------
+    pk:  array-like of shape (k,) or (N, k)
+        component probabilities (must sum to one)
+    *components: ProbDist objects
+        the k component distributions
+    Example:
+        mix = Mixture([0.6, 0.4], Normal(loc=3.), Normal(loc=-3.))
+    """
+
+    def __init__(self, pk, *components):
+        self.pk = np.atleast_1d(pk)
+        self.k = self.pk.shape[-1]
+        if len(components) != self.k:
+            raise ValueError("Size of pk and nr of components should match")
+        self.components = components
+
+    def logpdf(self, x):
+        lpks = [np.log(self.pk[..., i]) + cd.logpdf(x) for i, cd in enumerate(self.components)]
+        return sp.special.logsumexp(np.column_stack(tuple(lpks)), axis=-1)
+
+    def rvs(self, size=None):
+        k = Categorical(p=self.pk).rvs(size=size)
+        xk = [cd.rvs(size=size) for cd in self.components]
+        # sub-optimal, we sample N x k values
+        return np.choose(k, xk)
+
+
+class MarineSSM(ssms.StateSpaceModel):
+    default_params = {
+        "z0": 0.0,  # Initial value of z_0
+        "z1": 0.0,  # Initial value of z_1
+        "a1": 0.0,  # Initial value of a_1
+        "a2": 0.0,  # Initial value of a_2
+        "sigma_o": 0.1,  # observation error (y) <-> e
+        "sigma_v": 0.1,  # Disturbance term (a1, a2) <-> nu
+        "sigma_e": 0.1,  # System noise (z) <-> epsilon
+        "c1": 0.9,  # Mixture options for the system noise
+        "c2": 0.1,
+        "delta": 10,
+        "alpha": 0.5,  # Discounting factor (for nu)
+    }
+
+    def PX0(self):  # dist of X_0
+        zt = Mixture(  # z_1 (mixture)
+            [self.c1, self.c2],
+            Normal(loc=self.z1, scale=self.sigma_e),
+            Normal(loc=self.z1, scale=self.delta * self.sigma_e),
+        )
+        ztm = Mixture(  # z_0 (mixture)
+            [self.c1, self.c2],
+            Normal(loc=self.z0, scale=self.sigma_e),
+            Normal(loc=self.z0, scale=self.delta * self.sigma_e),
+        )
+        a1t = Normal(loc=self.a1, scale=self.sigma_v)  # a1_t
+        a2t = Normal(loc=self.a2, scale=self.sigma_v)  # a2_t
+        return IndepProd(zt, ztm, a1t, a2t)
+
+    def PX(self, t, xp):  # dist of X_t at time t, given X_{t-1}
+        loc = xp[:, 2] * xp[:, 0] + xp[:, 3] * xp[:, 1]
+        zt = Mixture(  # z_t (mixture)
+            [self.c1, self.c2],
+            Normal(loc=loc, scale=self.sigma_e),
+            Normal(loc=loc, scale=self.delta * self.sigma_e),
+        )
+        ztm = Normal(loc=xp[:, 0], scale=0.0)  # z_{t-1} (0 variance)
+        a1t = Normal(loc=xp[:, 2], scale=self.sigma_v)  # a1_t
+        a2t = Normal(loc=xp[:, 3], scale=self.sigma_v)  # a2_t
+        return IndepProd(zt, ztm, a1t, a2t)
+
+    def PY(self, t, xp, x):  # dist of Y_t at time t, given X_t and X_{t-1}
+        return Normal(loc=x[:, 0], scale=self.sigma_o)
