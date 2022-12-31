@@ -111,7 +111,7 @@ $$
 \end{equation}
 $$
 avec
-* $\zeta_t$ une *dummy* variable transformer l'équation en un modèle Markovien.
+* $\zeta_t$ une *dummy* variable transformer l'équation en un modèle Markovien ($\zeta_t = z_{t-1}$).
 
 ### Augement state vector equations
 
@@ -141,7 +141,10 @@ On a ainsi
     1 & 0 & 0 & 0
 \end{pmatrix}$
 * $\bm{e}_t \sim \mathcal{N}\left(0, \sigma_{0, t}^2\right)$
-* $\bm{y}_t = \tilde{\bm{H}} \tilde{\bm{x}}_t + \bm{e}_t = z_t + \bm{e}_t$
+* $\bm{y}_t = \tilde{\bm{H}} \tilde{\bm{x}}_t + \bm{e}_t = z_t + \bm{e}_t$ où $\tilde{\bm{H}} =
+\begin{pmatrix}
+    1 & 0 & 0 & 0
+\end{pmatrix}$
 
 
 ### System noise equation
