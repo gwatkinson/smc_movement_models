@@ -27,6 +27,7 @@ plotly = "^5.11.0"
 jupyter = "^1.0.0"
 notebook = "^6.5.2"
 click = "^8.1.3"
+tqdm = "^4.64.1"
 # Specific packages
 llvmlite = "0.39.1 "
 
