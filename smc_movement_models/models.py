@@ -72,7 +72,6 @@ class MarineSSM(ssms.StateSpaceModel):
         "c1": 0.9,  # Mixture options for the system noise
         "c2": 0.1,
         "delta": 10,
-        "alpha": 0.5,  # Discounting factor (for nu)
     }
 
     def PX0(self):  # dist of X_0
