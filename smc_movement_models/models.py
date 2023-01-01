@@ -26,8 +26,9 @@ from particles.distributions import ProbDist, Categorical
 import scipy as sp
 import numpy as np
 
+from particles import SMC
 from particles.distributions import Normal, IndepProd
-import particles.state_space_models as ssms
+from particles.state_space_models import Bootstrap, StateSpaceModel
 
 
 class Mixture(ProbDist):
@@ -60,7 +61,7 @@ class Mixture(ProbDist):
         return np.choose(k, xk)
 
 
-class MarineSSM(ssms.StateSpaceModel):
+class MarineSSM(StateSpaceModel):
     default_params = {
         "z0": 0.0,  # Initial value of z_0
         "z1": 0.0,  # Initial value of z_1
@@ -103,3 +104,41 @@ class MarineSSM(ssms.StateSpaceModel):
 
     def PY(self, t, xp, x):  # dist of Y_t at time t, given X_t and X_{t-1}
         return Normal(loc=x[:, 0], scale=self.sigma_o)
+
+
+def run_smc(window, N=200, **kwargs):
+    my_ssm_model = MarineSSM(z0=window[0], z1=window[1], **kwargs)
+    my_fk_model = Bootstrap(ssm=my_ssm_model, data=window)
+    my_alg = SMC(fk=my_fk_model, N=N, store_history=True)
+    my_alg.run()
+    return my_alg
+
+
+def estimate_a1_a2_on_window(window, N=500, M=10, epsilon=0.1, alpha=0.5):
+    final_a1s = []
+    final_a2s = []
+    for m in range(M):
+        a1 = final_a1s[-1].mean() if m > 0 else 0
+        a2 = final_a2s[-1].mean() if m > 0 else 0
+        alg = run_smc(
+            window=window,
+            sigma_v=epsilon,
+            a1=a1,
+            a2=a2,
+            sigma_o=0.1,
+            sigma_e=0.1,
+            c1=0.9,
+            c2=0.1,
+            delta=10,
+        )
+        a1s_tmp = np.array(alg.hist.X)[:, :, 2]
+        a2s_tmp = np.array(alg.hist.X)[:, :, 3]
+        wgts = np.array([w.W for w in alg.hist.wgts])
+        final_a1s.append(np.average(a1s_tmp, weights=wgts, axis=1))
+        final_a2s.append(np.average(a2s_tmp, weights=wgts, axis=1))
+        epsilon *= 0.5
+
+    final_a1s = np.array(final_a1s)
+    final_a2s = np.array(final_a2s)
+
+    return final_a1s, final_a2s
