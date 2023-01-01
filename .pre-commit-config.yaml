@@ -78,10 +78,10 @@ repos:
     - id: darglint
       args: ["docstring_style=google"]
 
--   repo: https://github.com/kynan/nbstripout
-    rev: 0.3.9
-    hooks:
-    - id: nbstripout
+# -   repo: https://github.com/kynan/nbstripout
+#     rev: 0.3.9
+#     hooks:
+#     - id: nbstripout
 
 -   repo: https://github.com/nbQA-dev/nbQA
     rev: 1.5.3
