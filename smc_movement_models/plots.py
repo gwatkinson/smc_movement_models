@@ -3,52 +3,10 @@
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import pandas as pd
-
-import smc_movement_models.graph_values as gv
+import seaborn as sns
+import numpy as np
 
 plt.style.use("seaborn-v0_8-paper")
-
-
-# Plotting functions
-def plot_graph_values(figsize=(10, 10)):
-    fig, (ax1, ax2, ax3) = plt.subplots(3, 1, sharex=True, figsize=figsize)
-
-    ax1.plot(
-        gv.se.keys(),
-        gv.se.values(),
-        marker="d",
-        label=r"System noise ($\hat{\sigma}_{\varepsilon}^2$)",
-    )
-    ax1.plot(
-        gv.s0.keys(), gv.s0.values(), marker="v", label=r"Observation error ($\hat{\sigma}_{o}^2$)"
-    )
-    ax1.set(ylabel="Variance")
-    ax1.legend()
-
-    ax2.plot(gv.a1.keys(), gv.a1.values())
-    ax2.axhline(y=0, ls="--")
-    ax2.set(ylabel="$a_1$")
-
-    ax3.plot(gv.a2.keys(), gv.a2.values())
-    ax3.axhline(y=0, ls="--")
-    ax3.set(ylabel="$a_2$", xlabel="Time of day")
-
-    fig.suptitle("Appoximate results from the paper")
-    fig.tight_layout()
-
-    return fig
-
-
-def plot_real_data(path, figsize=(10, 10)):
-    fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=figsize)
-
-    df = pd.read_csv(path)
-    df["Dtime"] = pd.to_datetime(df["Dtime"])
-
-    df.plot(x="Dtime", y="Velocity", ax=ax1)
-    df.plot(x="Dtime", y="Depth", ax=ax2)
-
-    return fig
 
 
 def plot_acvf(acvfs, window_times, figsize=(10, 5)):
@@ -148,4 +106,17 @@ def plot_a1_a2_single_plot(time_results, figsize=(7, 3.5)):
     time_results.plot(x="Dtime", y="rolling_a2s", ax=ax, color="blue", label="Rolling average")
     ax.set(ylabel="Variances", xlabel="Time of day")
     # ax.legend(loc="upper left")
+    return fig
+
+
+def plot_a1_a2_var(final_res, figsize=(7, 3.5)):
+    fig, ax = plt.subplots(1, 1, figsize=figsize)
+    sns.lineplot(data=final_res, x="Dtime", y="a1s", ax=ax, label=r"$\hat{a}_1$")
+    sns.lineplot(data=final_res, x="Dtime", y="a2s", ax=ax, label=r"$\hat{a}_2$")
+    # fig.legend()
+    ax.set(xlabel="Time of day", ylabel="Variances")
+    x_ids = np.linspace(0, 108, 9)
+    ax.set_xticklabels(
+        labels=final_res["Dtime"].iloc[x_ids].dt.strftime("%H:%M"), rotation=45, ha="right"
+    )
     return fig
