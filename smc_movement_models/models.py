@@ -106,6 +106,46 @@ class MarineSSM(StateSpaceModel):
         return Normal(loc=x[:, 0], scale=self.sigma_o)
 
 
+class MarineSSM_SMC2(StateSpaceModel):
+    default_params = {
+        "z0": 0.0,  # Initial value of z_0
+        "z1": 0.0,  # Initial value of z_1
+        "a1": 0.0,  # Value of a_1
+        "a2": 0.0,  # Value of a_2
+        "sigma_o": 0.1,  # observation error (y) <-> e
+        "sigma_e": 0.1,  # System noise (z) <-> epsilon
+        "c1": 0.9,  # Mixture options for the system noise
+        "c2": 0.1,
+        "delta": 10,
+    }
+
+    def PX0(self):  # dist of X_0
+        zt = Mixture(  # z_1 (mixture)
+            [self.c1, self.c2],
+            Normal(loc=self.z1, scale=self.sigma_e),
+            Normal(loc=self.z1, scale=self.delta * self.sigma_e),
+        )
+        ztm = Mixture(  # z_0 (mixture)
+            [self.c1, self.c2],
+            Normal(loc=self.z0, scale=self.sigma_e),
+            Normal(loc=self.z0, scale=self.delta * self.sigma_e),
+        )
+        return IndepProd(zt, ztm)
+
+    def PX(self, t, xp):  # dist of X_t at time t, given X_{t-1}
+        loc = self.a1 * xp[:, 0] + self.a2 * xp[:, 1]
+        zt = Mixture(  # z_t (mixture)
+            [self.c1, self.c2],
+            Normal(loc=loc, scale=self.sigma_e),
+            Normal(loc=loc, scale=self.delta * self.sigma_e),
+        )
+        ztm = Normal(loc=xp[:, 0], scale=0.0)  # z_{t-1} (0 variance)
+        return IndepProd(zt, ztm)
+
+    def PY(self, t, xp, x):  # dist of Y_t at time t, given X_t and X_{t-1}
+        return Normal(loc=x[:, 0], scale=self.sigma_o)
+
+
 def run_smc(window, N=200, **kwargs):
     my_ssm_model = MarineSSM(z0=window[0], z1=window[1], **kwargs)
     my_fk_model = Bootstrap(ssm=my_ssm_model, data=window)
@@ -142,3 +182,7 @@ def estimate_a1_a2_on_window(window, N=500, M=10, epsilon=0.1, alpha=0.5):
     final_a2s = np.array(final_a2s)
 
     return final_a1s, final_a2s
+
+
+def estimate_variance():
+    pass
