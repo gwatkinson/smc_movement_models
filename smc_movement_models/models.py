@@ -30,6 +30,10 @@ from particles import SMC
 from particles.distributions import Normal, IndepProd
 from particles.state_space_models import Bootstrap, StateSpaceModel
 
+from tqdm import tqdm
+import pandas as pd
+from statsmodels.tsa.stattools import acovf
+
 
 class Mixture(ProbDist):
     """Mixture distributions.
@@ -146,7 +150,63 @@ class MarineSSM_SMC2(StateSpaceModel):
         return Normal(loc=x[:, 0], scale=self.sigma_o)
 
 
-def run_smc(window, N=200, **kwargs):
+def get_windows(day, overlap_size=156):
+    num_windows = int((len(day) - overlap_size) / overlap_size)
+    windows = []
+    window_times = []
+    for i in range(num_windows):
+        window = day[i * overlap_size : (i + 2) * overlap_size - 1]["Velocity"].values
+        window_time = day["Dtime"].iloc[(i + 1) * overlap_size]
+        windows.append(window)
+        window_times.append(window_time)
+    return windows, window_times
+
+
+def estimate_variances(window, nlag=60, n_estimates=8):
+    acvf = acovf(window, nlag=60)
+    x = np.arange(n_estimates + 1)
+    y = acvf[: n_estimates + 1]
+    coeffs = np.polyfit(x[1:], y[1:], 2)
+    regr = np.poly1d(coeffs)
+    mse = np.mean((regr(x) - y) ** 2)
+
+    sigma_zd = np.max([coeffs[-1], 1e-4])
+    sigma_od = np.max([acvf[0] - sigma_zd, 1e-4])
+    sigma_ed = (1 - (acvf[1] / acvf[0]) ** 2) * sigma_zd
+
+    return sigma_od, sigma_ed, sigma_zd, mse, acvf
+
+
+def estimate_variance_on_all_windows(
+    windows,
+    nlag=12,
+    n_estimates=8,
+):
+    sigma_ods = []
+    sigma_eds = []
+    sigma_zds = []
+    mses = []
+    acvfs = []
+    for window in windows:
+        sigma_od, sigma_ed, sigma_zd, mse, acvf = estimate_variances(
+            window, nlag=nlag, n_estimates=n_estimates
+        )
+        sigma_ods.append(sigma_od)
+        sigma_eds.append(sigma_ed)
+        sigma_zds.append(sigma_zd)
+        mses.append(mse)
+        acvfs.append(acvf)
+
+    sigma_ods = np.array(sigma_ods)
+    sigma_eds = np.array(sigma_eds)
+    sigma_zds = np.array(sigma_zds)
+    mses = np.array(mses)
+    acvfs = np.array(acvfs).T
+
+    return sigma_ods, sigma_eds, sigma_zds, mses, acvfs
+
+
+def run_smc(window, N=500, **kwargs):
     my_ssm_model = MarineSSM(z0=window[0], z1=window[1], **kwargs)
     my_fk_model = Bootstrap(ssm=my_ssm_model, data=window)
     my_alg = SMC(fk=my_fk_model, N=N, store_history=True)
@@ -154,29 +214,43 @@ def run_smc(window, N=200, **kwargs):
     return my_alg
 
 
-def estimate_a1_a2_on_window(window, N=500, M=10, epsilon=0.1, alpha=0.5):
+def estimate_a1_a2_on_window(
+    window,
+    N=500,
+    M=10,
+    initial_a1=0,
+    initial_a2=0,
+    initial_sigma_v=0.1,
+    sigma_o=0.1,
+    sigma_e=0.1,
+    alpha=0.5,
+    c1=0.9,
+    c2=0.1,
+    delta=10,
+):
     final_a1s = []
     final_a2s = []
     for m in range(M):
-        a1 = final_a1s[-1].mean() if m > 0 else 0
-        a2 = final_a2s[-1].mean() if m > 0 else 0
+        a1 = final_a1s[-1].mean() if m > 0 else initial_a1
+        a2 = final_a2s[-1].mean() if m > 0 else initial_a2
         alg = run_smc(
             window=window,
-            sigma_v=epsilon,
+            N=N,
+            sigma_v=initial_sigma_v,
             a1=a1,
             a2=a2,
-            sigma_o=0.1,
-            sigma_e=0.1,
-            c1=0.9,
-            c2=0.1,
-            delta=10,
+            sigma_o=sigma_o,
+            sigma_e=sigma_e,
+            c1=c1,
+            c2=c2,
+            delta=delta,
         )
-        a1s_tmp = np.array(alg.hist.X)[:, :, 2]
+        a1s_tmp = np.array(alg.hist.X)[:, :, 2]  # shape (T, N)
         a2s_tmp = np.array(alg.hist.X)[:, :, 3]
-        wgts = np.array([w.W for w in alg.hist.wgts])
-        final_a1s.append(np.average(a1s_tmp, weights=wgts, axis=1))
+        wgts = np.array([w.W for w in alg.hist.wgts])  # shape (T, N)
+        final_a1s.append(np.average(a1s_tmp, weights=wgts, axis=1))  # shape (T)
         final_a2s.append(np.average(a2s_tmp, weights=wgts, axis=1))
-        epsilon *= 0.5
+        initial_sigma_v *= alpha
 
     final_a1s = np.array(final_a1s)
     final_a2s = np.array(final_a2s)
@@ -184,5 +258,52 @@ def estimate_a1_a2_on_window(window, N=500, M=10, epsilon=0.1, alpha=0.5):
     return final_a1s, final_a2s
 
 
-def estimate_variance():
-    pass
+def estimate_a1_a2_on_all_windows(
+    windows,
+    window_times,
+    sigma_os,
+    sigma_es,
+    N=500,
+    M=10,
+    initial_a1=0,
+    initial_a2=0,
+    initial_sigma_v=0.1,
+    alpha=0.5,
+    c1=0.9,
+    c2=0.1,
+    delta=10,
+):
+    time_a1s = []
+    time_a2s = []
+
+    for window, sigma_o, sigma_e in tqdm(zip(windows, sigma_os, sigma_es), total=len(windows)):
+        final_a1s, final_a2s = estimate_a1_a2_on_window(
+            window=window,
+            N=N,
+            M=M,
+            initial_a1=initial_a1,
+            initial_a2=initial_a2,
+            initial_sigma_v=initial_sigma_v,
+            sigma_o=sigma_o,
+            sigma_e=sigma_e,
+            alpha=alpha,
+            c1=c1,
+            c2=c2,
+            delta=delta,
+        )
+        time_a1s.append(final_a1s)
+        time_a2s.append(final_a2s)
+
+    time_a1s = np.array(time_a1s)  # shape (n_windows, M, T)
+    time_a2s = np.array(time_a2s)
+    time_results = pd.DataFrame(  # shape (n_windows, 5)
+        {
+            "Dtime": window_times,
+            "a1s": time_a1s[:, -1].mean(axis=1),
+            "a2s": time_a2s[:, -1].mean(axis=1),
+        }
+    )
+    time_results["rolling_a1s"] = time_results["a1s"].rolling(window=5, center=True).mean()
+    time_results["rolling_a2s"] = time_results["a2s"].rolling(window=5, center=True).mean()
+
+    return time_results
