@@ -214,13 +214,14 @@ def run_smc(window, N=500, **kwargs):
     my_alg.run()
     return my_alg
 
+
 def run_smc2(window, N=200, **kwargs):
     my_ssm_model = MarineSSM_SMC2(z0=window[0], z1=window[1], **kwargs)
-    my_prior = StructDist({"prior":Normal(scale=0.1)})
+    my_prior = StructDist({"prior": Normal(scale=0.1)})
     my_fk_model = SMC2(ssm=my_ssm_model, prior=my_prior, data=window)
     my_alg = SMC(fk=my_fk_model, N=N, store_history=True)
     my_alg.run()
-    return my_alg 
+    return my_alg
 
 
 def estimate_a1_a2_on_window(
