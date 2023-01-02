@@ -11,33 +11,43 @@ Projet pour le cours **Hidden Markov models and Sequential Monte-Carlo methods**
 
 Dans ce projet, nous implementons le modèle décrit dans le papier [Estimating behavioral parameters in animal movement models using a state-augmented particle filter](https://dalspace.library.dal.ca/bitstream/handle/10222/33464/Dowd_et_al-2011-Ecology.pdf), et l'approfondissons avec des méthodes plus récentes.
 
-Pour aller plus loin, ce papier propose un algorithme plus récent: [Mixture Kalman filters](https://api.istex.fr/ark:/67375/WNG-STH7JZLH-T/fulltext.pdf?auth=ip,fede&sid=google,istex-view)
+Notre rapport est disponible [ici](https://github.com/gwatkinson/smc_movement_models/blob/main/SMC_Movement_Model_Ecology.pdf) à la racine du projet.
 
-### Plan
+### Le package `smc_movement_models`
 
-* [ ] Récupérer/simuler les données
-* [ ] Appliquer le papier aux données
-* [ ] Appliquer SMC<sup>2</sup> aux données
-* [ ] Appliquer Kalman aux données si on a le temps
-* [ ] Comparer et critiquer les résultats
+Les fonctions sont définies dans le package `smc_movement_models`.
 
-## Commandes
+Les modules `models.py` et `models_SMC2.py` contiennent les modèles de mouvement et l'algorithme du papier et une version SMC2 respectivement.
 
-### Process des données
+Le module `plot.py` contient des fonctions utilitaires pour génerer des graphes.
 
-```python
-python smc_movement_models/data_generation.py
-# Pour plus d'informations
-# python smc_movement_models/data_generation.py --help
-```
-### Styler le code R
+Le module `process_data.py` contient des fonctions utilitaires pour traiter les données brutes et une CLI.
 
-```bash
-# Rscript -e "install.packages(c('styler', 'lintr'))"  # pour installer les packages
-Rscript -e "styler::style_file('original_code.R')"  # To format
-Rscript -e "lintr::lint('original_code.R')"  # To lint
-```
+### Les notebooks
 
+Les notebooks sont dans le dossier `notebooks` et permettent de lancer les expériences et de visualiser les résultats.
+
+Le notebook `notebooks/simulation_papier.ipynb` contient les expériences avec l'algorithme du papier.
+
+Le notebook `notebooks/implementation_smc2.ipynb` contient les expériences avec la version SMC2.
+
+### Le reste
+
+Le dossier `data` contient les données brutes et les données traitées.
+
+Le dossier `images` contient les images utilisées dans le rapport.
+
+Le dossier `paper` contient les papiers liés au projet.
+
+Le dossier `r_code` contient le code R original du papier (pas utilisé par notre groupe).
+
+Les fichiers `poetry.lock` et `pyproject.toml` sont utilisés par [poetry](https://python-poetry.org/) pour gérer les dépendances.
+
+Le fichier `requirements.txt` est utilisé par `pip` pour gérer les dépendances et est généré par poetry.
+
+Le dossier `latex` contient le LaTeX utilisé pour le rapport.
+
+## Installation
 
 ## Mise en place
 
@@ -46,11 +56,13 @@ Nous utilisons Python pour simuler les données et mettre en place les modèles,
 ### Installation
 
 Avant toutes choses, il faut se déplacer dans le dossier `smc_movement_models`:
+
 ```bash
 cd /path/to/smc_movement_models
 ```
 
 #### Avec [`poetry`](https://python-poetry.org/)
+
 ```bash
 # Creation d'un environement virtuel et installation des packages
 poetry install
@@ -61,6 +73,7 @@ poetry shell  # sub shell
 ```
 
 #### Avec `pip`
+
 ```bash
 # Creation d'un environement virtuel
 python -m venv .venv
@@ -73,9 +86,22 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
+### Process des données
+
+Pour générer les données à partir du fichier brut, il faut lancer le script `process_data.py` :
+
+```python
+python smc_movement_models/process_data.py
+# Pour plus d'informations
+# python smc_movement_models/process_data.py --help
+```
+
+### Développement
+
 #### `pre-commit`
 
 Pour activer les pre-commit qui formattent le code avant chaque commit :
+
 ```bash
 pre-commit install
 pre-commit run --all-files  # Pour installer les modules et lancer les tests
@@ -84,24 +110,7 @@ pre-commit run --all-files  # Pour installer les modules et lancer les tests
 ![Exemple de pre-commit](images/pre-commit-exemple.png)
 
 Pour forcer un commit sans vérifier :
+
 ```bash
 git commit -m "..." --no-verify
-```
-
-### Architecture du projet
-
-```bash
-smc_movement_models
-├── README.md
-├── LICENSE
-├── requirements.txt
-├── environement.yml
-├── images
-│   └── ...
-├── notebooks
-│   └── first_implementation.ipynb
-└── smc_movement_models
-    ├── data_generation.py  # Sctipt to generate the data
-    ├── models.py  # Implement the models
-    └── main.py  # Main script to reproduce the experiments and plots
 ```
