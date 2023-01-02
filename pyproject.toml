@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "smc-movement-models"
-version = "0.1.0"
+version = "1.0.0"
 description = "Projet pour le cours Hidden Markov models and Sequential Monte-Carlo methods de l'ENSAE."
 authors = [
     "Gabriel Watkinson <gabriel.watkinson@gmail.com>",
@@ -16,7 +16,7 @@ packages = [{include = "smc_movement_models"}]
 python = ">3.8, <3.11"
 # Scientific packages
 numpy = "1.23.5"
-scipy = "^1.8"
+scipy = "^1.8, <1.9"
 particles = "^0.3"
 pandas = "^1.5.2"
 statsmodels = "^0.13.5"
