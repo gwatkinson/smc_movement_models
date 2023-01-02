@@ -1,0 +1,61 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Ce fichier contient des commandes pour respecter
+% la typographie française, mais également pour
+% les abréviations.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Évite veuves et orphelines
+\widowpenalty=10000
+\clubpenalty=10000
+
+% Permet de modifier l'espace entre es lignes.
+\renewcommand{\baselinestretch}{1.1}
+\onehalfspacing % Permet de mettre le reste du texte avec un interligne de 1,5 (recommandé pour les articles universitaires).
+
+% Chiffres romain
+\newcommand{\cRM}[1]{\MakeUppercase{\romannumeral #1}}	% Capital
+\newcommand{\cRm}[1]{\textsc{\romannumeral #1}}	% Petit majuscule
+\newcommand{\crm}[1]{\romannumeral #1} % Minuscule
+
+% Siècle
+\newcommand*{\siecle}[1]{%
+	\ifnum #1=1%
+		\cRm{#1}\textsuperscript{er}~siècle%
+	\else%
+		\cRm{#1}\textsuperscript{e}~siècle%
+	\fi%
+}%
+\newcommand*{\siecles}[2]{\cRm{#1}~-~\cRm{#2}\textsuperscript{e}~siècles}
+
+% Guillemets
+\newcommand{\guill}[1]{\og #1\fg{}}
+
+% Nom d'auteur
+\newcommand\auteur[2]{#1~\textsc{#2}\xspace}
+
+% Abréviations
+\newcommand{\ssi}{si et seulement si\xspace}
+\newcommand{\cad}{c'est-à-dire\xspace}
+% \newcommand{\cf}[0]{\textit{cf.}\xspace} % Cf. avec espace à la suite
+\newcommand{\apjc}{apr. J.-C.\xspace} % après Jésus-Christ
+\newcommand{\avjc}{av. J.-C.\xspace} % avant Jésus-Christ
+\newcommand{\Mme}{M\textsuperscript{me}\xspace} % Madame
+\newcommand{\Mlle}{M\textsuperscript{lle}\xspace} % Mademoiselle
+\newcommand{\numero}{n\textsuperscript{o}\xspace} % numéro
+\newcommand{\Num}{N\textsuperscript{o}\xspace} % Numéro
+\newcommand{\nums}{n\textsuperscript{os}\xspace} % numéros
+\newcommand{\Nums}{N\textsuperscript{os}\xspace} % Numéros
+
+% Add a period to the end of an abbreviation unless there's one
+% already, then \xspace.
+\makeatletter
+\DeclareRobustCommand\onedot{\futurelet\@let@token\@onedot}
+\def\@onedot{\ifx\@let@token.\else.\null\fi\xspace}
+
+\def\eg{\emph{e.g}\onedot} \def\Eg{\emph{E.g}\onedot}
+\def\ie{\emph{i.e}\onedot} \def\Ie{\emph{I.e}\onedot}
+\def\cf{\emph{c.f}\onedot} \def\Cf{\emph{C.f}\onedot}
+\def\etc{\emph{etc}\onedot} \def\vs{\emph{vs}\onedot}
+\def\wrt{w.r.t\onedot} \def\dof{d.o.f\onedot}
+\def\etal{\emph{et al}\onedot}
+\makeatother

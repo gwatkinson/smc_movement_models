@@ -1,0 +1,125 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Ce fichier contient des nouvelles commandes
+% pour faciliter l'écriture des mathématiques
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Ensembles
+\let\ensembleNombre\mathbb
+\newcommand*\N{\ensuremath{\ensembleNombre{N}}}       % Ensemble des entiers naturels N
+\newcommand*\Z{\ensuremath{\ensembleNombre{Z}}}       % Ensemble des entiers relatifs Z
+\newcommand*\Q{\ensuremath{\ensembleNombre{Q}}}       % Ensemble des rationnels Q
+\newcommand*\R{\ensuremath{\ensembleNombre{R}}}       % Ensemble des réels R
+\newcommand*\Complex{\ensuremath{\ensembleNombre{C}}} % Ensemble des complexes C
+
+% Encadrement
+\newcommand{\angles}[1]{\left\langle #1 \right\rangle} % ⟨⟩
+\newcommand{\braces}[1]{\left\lbrace #1 \right\rbrace} % {}
+\newcommand{\bracks}[1]{\left\lbrack #1 \right\rbrack} % []
+\newcommand{\pars}[1]{\left( #1 \right)}               % ()
+\newcommand{\norme}[2][]{\ensuremath{\left\Vert #2\right\Vert_{#1}}}       % Norme
+\newcommand{\ent}[1]{\left\lfloor #1\right\rfloor}     % Partie entière inférieure
+\newcommand{\entsup}[1]{\left\lceil #1\right\rceil}    % Partie entière supérieure
+\newcommand{\abs}[1]{\left\vert #1\right\vert}         % Valeur absolue
+
+% Dérivées
+\newcommand{\deriv}[3][]{\frac{\mathrm{d}^{#1}#2}{\mathrm{d} {#3}^{#1}}}    % Dérivée non partielle
+\newcommand{\partiald}[3][]{\frac{\partial^{#1}#2}{\partial {#3}^{#1}}} % Dérivée partielle
+
+% Intervalles
+\newcommand*\intervalle[4]{\left#1 #2 \, ; #3 \right#4}                       % Définit la notion d'intervalle
+\newcommand*\intervalleOO[2]{\intervalle{]}{#1}{#2}{[}}                       % ]a ; b[
+\newcommand*\intervalleFF[2]{\intervalle{[}{#1}{#2}{]}}                       % [a ; b]
+\newcommand*\intervalleOF[2]{\intervalle{]}{#1}{#2}{]}}                       % ]a ; b]
+\newcommand*\intervalleFO[2]{\intervalle{[}{#1}{#2}{[}}                       % [a ; b[
+\newcommand*\intervalleEntier[2]{\intervalle{\llbracket}{#1}{#2}{\rrbracket}} % Ensemble d'entiers
+
+% Ensemble "tel que"
+\newcommand*\enstq[2]{\braces{#1\;|\; #2}}
+
+% Probabilité, espérance, variance, covariance et corrélation
+\newcommandx{\proba}[3][1, 3=0]{
+\ifthenelse{\isempty{#2}}{\mathbb{P}_{#1}}{%
+\ifthenelse{\equal{#3}{0}}{\mathbb{P}_{#1}\pars{#2}}{\mathbb{P}_{#1}\pars{#2 \middle| #3}}}%
+}
+\newcommandx{\esp}[3][1, 3=0]{
+\ifthenelse{\isempty{#2}}{\mathbb{E}_{#1}}{%
+\ifthenelse{\equal{#3}{0}}{\mathbb{E}_{#1}\bracks{#2}}{\mathbb{E}_{#1}\bracks{#2 \middle| #3}}}%
+}
+\newcommandx{\var}[3][1, 3=0]{
+\ifthenelse{\isempty{#2}}{\operatorname{Var}_{#1}}{%
+\ifthenelse{\equal{#3}{0}}{\operatorname{Var}_{#1}\pars{#2}}{\operatorname{Var}_{#1}\pars{#2 \middle| #3}}}%
+}
+\newcommandx{\cov}[4][1, 4=0]{
+\ifthenelse{\isempty{#2} \AND \isempty{#3}}{\operatorname{Cov}_{#1}}{%
+\ifthenelse{\equal{#4}{0}}{\operatorname{Cov}_{#1}\pars{#2, #3}}{\operatorname{Cov}_{#1}\pars{#2, #3 \middle| #4}}}%
+}
+\newcommandx{\corr}[3][1]{\ifthenelse{\isempty{#2} \AND \isempty{#3}}{\operatorname{Corr}_{#1}}{\operatorname{Corr}_{#1}\pars{#2, #3}}}
+
+% Lois usuelles de probabilités
+\newcommand{\Ber}[1]{\mathcal{B}ernoulli\pars{#1}}       % Bernoulli
+\newcommand{\Binom}[2]{\mathcal{B}\pars{#1, #2}}         % Binomiale
+\newcommand{\Poisson}[1]{\mathcal{P}\pars{#1}}           % Poisson
+\newcommand{\Geo}[1]{\mathcal{G}eo\pars{#1}}             % Géométrique
+\newcommand{\Unif}[1]{\mathcal{U}nif_{#1}}               % Uniforme
+\newcommand{\Exp}[1]{\mathcal{E}xp\pars{#1}}             % Exponentielle
+\newcommandx{\Norm}[3][1]{\mathcal{N}_{#1}\pars{#2, #3}} % Normale
+\newcommand{\Gammaloi}[2]{\Gamma\pars{#1, #2}}           % Gamma
+\newcommand{\Betaloi}[2]{\beta\pars{#1, #2}}             % Beta
+\newcommand{\Pareto}[2]{\mathcal{P}areto\pars{#1, #2}}   % Pareto
+\newcommand{\Laplace}[1]{\mathcal{L}\pars{#1}}           % Laplace
+\newcommand{\Cauchy}[1]{\mathcal{C}\pars{#1}}            % Cauchy
+
+% Égalités
+\newcommandx{\egalloi}{\overset{\mathrm{\mathcal{L}oi}}{=}} % égalité en loi
+\newcommandx{\egalprob}{\overset{\mathbb{P}}{=}}            % égalité en probabilité
+\newcommandx{\egaltxt}[1]{\overset{\mathrm{#1}}{=}}         % égal avec overscript
+\newcommandx{\simiid}{\overset{\mathrm{iid}}{\sim}}         % sim iid
+
+% Indicatrice
+\newcommand{\1}[1][]{\mathds{1}_{#1}}
+
+% max, min, argmax et argmin avec subscript
+\newcommandx{\maxx}[1]{\underset{#1}{\max}}
+\newcommandx{\minn}[1]{\underset{#1}{\min}}
+\newcommandx{\argmax}[1][1]{\underset{#1}{\arg\max}}
+\newcommandx{\argmin}[1][1]{\underset{#1}{\arg\min}}
+
+% matrice 3*3 diagonale avec la diagonale donnée sur les 3 arguments
+\newcommand{\mattroisdiag}[3]{\left( \begin{array}{ccc} #1 &  0 &  0 \\ 0  & #2 &  0 \\ 0  &  0 & #3\end{array} \right)}
+
+% Intégration
+\newcommand{\dint}{\mathrm{d}}
+\newcommandx{\integ}[4][2]{\int_{#1}^{#2} #3 \, \mathrm{d} #4}
+
+% moyenne simple et quadratique d'une grandeur scalaire
+\newcommand{\moy}[1]{\overline{#1}}
+\newcommand{\moyy}[1]{\overline{#1^2}}
+
+% Vecteurs
+\let\vecteur\overrightarrow % Permet de modifier la taille de la flèche d'un vecteur quand ce dernier est composé de plusieurs lettres par exemple.
+\newcommand*\coord[2]
+{
+   \vecteur{#1} \,
+   \begin{pmatrix}
+      #2
+   \end{pmatrix}
+} % Permet de déclarer les coordonnées d'un vecteur, exemple : \[\coord{AB}{12\\21} \coord{BC}{21\\12\\32}\]
+
+% Surface et volume
+\newcommandx{\surf}[2][2=m]{\numprint{#1}\,#2\textsuperscript{2}}
+\newcommandx{\vol}[2][2=m]{\numprint{#1}\,#2\textsuperscript{3}}
+
+% Fonction
+\newcommand*\fonction[5]{
+#1 \colon \left\{\begin{alignedat}{2}  &#2 &\: &\to      #3\\
+                                &#4 &   &\mapsto  #5
+\end{alignedat} \right. \kern-\nulldelimiterspace} % Permet de déclarer facilement une fonction, exemple : $\fonction{f}{E}{F}{x}{f(x)}$
+
+% Autres commandes utiles
+\newcommand{\compos}{\circ}                 % operateur de composition de fonctions
+\DeclareMathOperator{\card}{card}           % On déclare l’opérateur \card qui correspond à « card ».
+\newcommand*\PI{\ensuremath{\pi}}           % Permet d'afficher pi que l'on soit en mode math ou non.
+\newcommand{\ds}[1]{\displaystyle{#1}}      % Force LaTeX à gérer les indices et les exposants comme si il était en mode mathématique isolé
+\newcommand{\kronecker}[0]{\mathrm{\delta}} % symbole de Kronecker
+\newcommand{\heaviside}[0]{\mathrm{H}}      % fonctions d'Heaviside
+\newcommand{\dirac}[0]{\mathrm{\delta}}     % Distribution de Dirac

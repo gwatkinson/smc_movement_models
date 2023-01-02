@@ -1,0 +1,109 @@
+\usepackage[square,numbers]{natbib}         % Pour la bibliographie
+% \usepackage[nottoc]{tocbibind}
+\usepackage{url}            % Pour citer les adresses web
+\usepackage[hidelinks]{hyperref}       % Pour activer les liens cliquables
+\usepackage[T1]{fontenc}    % Encodage des accents
+\usepackage[utf8]{inputenc} % Lui aussi
+\usepackage[english]{babel} % Pour la traduction française
+\usepackage{numprint}       % Histoire que les chiffres soient bien
+\usepackage{eurosym}        % Permet l'utilisation du signe € : \EUR{\num{299792458.38}}
+\usepackage{appendix}       % Pour avoir des appendices
+\usepackage{xspace}         % Utile lors de la création d'abréviations
+\usepackage[dvipsnames]{xcolor}         % Permet de gérer facilement les couleurs.
+\usepackage{verbatim}       % Permet d'insérer du code LaTeX sans qu'il soit compilé
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+
+
+% Setup du headers
+\usepackage{fancyhdr}       % Fancy headers (page et titre de la section en haut)
+
+\usepackage{etoolbox}
+% \def\@part[#1]#2{%
+%     \ifnum \c@secnumdepth >-2\relax
+%       \refstepcounter{part}%
+%       \addcontentsline{toc}{part}{\thepart\hspace{1em}#1}%
+%     \else
+%       \addcontentsline{toc}{part}{#1}%
+%     \fi
+%     \markboth{}{}% <------- the patch changed this into \partmark{#1}
+%     {\centering
+%      \interlinepenalty \@M
+%      \normalfont
+%      \ifnum \c@secnumdepth >-2\relax
+%       \huge\bfseries \partname\nobreakspace\thepart
+%       \par
+%       \vskip 20\p@
+%      \fi
+%      \Huge \bfseries #2\par}%
+%     \@endpart}
+
+% \makeatletter
+% \patchcmd{\@part}% <cmd>
+%   {\markboth{}{}}% <search>
+%   {\partmark{#1}}% <replace>
+%   {}{}% <success><failure>
+% \makeatother
+% \pagestyle{fancy}
+% \fancyhf{}
+% \fancyhead{}
+% \renewcommand{\headrulewidth}{0.2pt}
+
+% \newcommand{\partmark}[1]{\markboth
+%   {\color[gray]{.0}\thepart. #1}{}}
+
+% \fancyhead[L]{Diffusion restreinte}
+% \fancyhead[OR]{\nouppercase\leftmark}
+% \fancyfoot[C]{\thepage}
+% \lhead{Diffusion restreinte}
+% \rhead{\nouppercase{\leftmark}}
+% \cfoot{\thepage}
+
+% Package pour avoir la section Annexes
+\usepackage{appendix}
+\renewcommand{\appendixtocname}{Appendix}  % On renomme dans la table des matières
+\renewcommand{\appendixpagename}{Appendix} % On renomme dans le document
+
+% Packages pour images et graphiques
+\usepackage{graphicx}   % Inclusion des graphiques
+\usepackage{graphics}
+\usepackage{wrapfig}    % Dessins dans le texte.
+\usepackage[justification=centering]{caption}    % Permet de personnaliser les styles des légendes.
+\usepackage{subcaption} % Permet d’insérer au sein d’une figure des sous-figures, chacune d’entre elles disposant d’une légende, en plus de la légende principale.
+
+% Un package pour les dessins (utilisé pour l'environnement {code})
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+\usepackage[framemethod=TikZ]{mdframed}
+
+% Packages pour la création de nouvelles commandes
+\usepackage{xifthen}
+\usepackage{xargs}
+
+% Packages pour la typographie
+\usepackage[maxlevel=3]{csquotes} % Propose des commandes pour les citations. L'option maxlevel permet de déterminer le nombre de niveaux d'imbrication maximal.
+% Exemple :  \enquote{Lorsque yyy déclare \enquote{zzz} il ne déclare rien du tout}. Les citations en bloc sont également possible : \begin{quote} citation \end{quote}. Pour les citations plus longues, on préférera \begin{quotation} citation longue \end{quotation}.
+\usepackage{setspace}             % Permet de modifier l'espacement entre les lignes.
+\usepackage{siunitx} % Pareil que numprint, mais pour un cadre mathématiques, donc permet de faire plus de chose : http://ctan.mines-albi.fr/macros/latex/contrib/siunitx/siunitx.pdf
+\sisetup{locale = FR} % Permet de mettre les conventions françaises (séparateur des milliers et virgules pour le séparateur décimal).
+% Exemples :
+%\num{299792458} :  Il y a des espaces.
+%\num{299792,458} : On obtient une virgule comme séparateur décimal.
+%\num{.34} : Même en utilisant le point, on obtient une virgule et un zéro est placé.
+%\num{299792,458 +- 0.09}  : On peut obtenir le signe "plus ou moins" avec +-.
+%\num{3e8} : "e" permet d’obtenir la puissance de 10, avec le signe x (3 x 10^8)
+
+% Packages pour les mathématiques
+\usepackage{amsmath}        % La base pour les maths
+\usepackage{mathrsfs}       % Quelques symboles supplémentaires
+\usepackage{amssymb}        % encore des symboles.
+\usepackage{amsfonts}       % Des fontes, eg pour \mathbb.
+\usepackage{mathtools}      % Permet d'utiliser des symboles d'égalités spéciaux
+\usepackage{dsfont}         % Pour avoir les notations nécessaires aux ensembles (nécessite mathbb)
+\usepackage{stmaryrd}       % Permet de faire des intervalles avec des doubles barres (intervalles d'entiers)
+\usepackage{esvect}         % Donne plein de possibilité pour les flèches des vecteurs
+\usepackage{systeme}        % Permet de créer facilement des systèmes (en mode mathématique ou en texte)
+
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+\usepackage{witharrows}

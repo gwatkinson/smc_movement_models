@@ -1,0 +1,62 @@
+% \documentclass{scrartcl}
+\documentclass{article}
+
+% \usepackage[hmargin=2.5cm,vmargin=3cm]{geometry}
+\usepackage[a4paper, left=2.5cm, right=2.5cm, top=3cm, bottom=3cm]{geometry}
+% Paramétrage
+\input{parameters/packages}
+\input{parameters/listings}
+\input{parameters/commandes_typo}
+\input{parameters/commandes_math}
+\input{parameters/commandes_perso}
+
+
+\begin{document}
+
+% Page de garde
+\input{content/PageDeGarde}
+
+% Table des matières
+\newpage
+\setcounter{tocdepth}{3}
+\tableofcontents
+\addtocontents{toc}{\protect\thispagestyle{empty}}
+
+% Contenu du document
+\setcounter{page}{0}
+\include{content/Contenu}
+
+% Ajout des annexes
+\clearpage \newpage
+\pagenumbering{roman}
+\setcounter{page}{1}
+\newpage
+\appendixpage
+\appendix
+\renewcommand{\figurename}{Appendix}
+\setcounter{figure}{0}
+\addcontentsline{toc}{section}{Appendix}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/var_fig.png}
+    \caption{Offline estimation of the system error and observation error variances, using a quadratic regression on the ACVF for each time window.}
+    \label{fig:my_label}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/acvf_fig.png}
+    \caption{Estimation of the ACVF on each of the 109 time windows.}
+    \label{fig:acvfs}
+\end{figure}
+
+
+% Bibliographie
+\newpage
+\nocite{*}
+\bibliographystyle{unsrtnat}
+\addcontentsline{toc}{section}{Reference}
+\bibliography{bibliography}
+
+\end{document}
