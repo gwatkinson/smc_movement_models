@@ -21,12 +21,13 @@ Examples:
     https://github.com/nchopin/particles
 """
 
-from particles.distributions import ProbDist, Categorical
+from particles.distributions import ProbDist, Categorical, StructDist
 
 import scipy as sp
 import numpy as np
 
 from particles import SMC
+from particles.smc_samplers import SMC2
 from particles.distributions import Normal, IndepProd
 from particles.state_space_models import Bootstrap, StateSpaceModel
 
@@ -152,6 +153,14 @@ def run_smc(window, N=200, **kwargs):
     my_alg = SMC(fk=my_fk_model, N=N, store_history=True)
     my_alg.run()
     return my_alg
+
+def run_smc2(window, N=200, **kwargs):
+    my_ssm_model = MarineSSM_SMC2(z0=window[0], z1=window[1], **kwargs)
+    my_prior = StructDist({"prior":Normal(scale=0.1)})
+    my_fk_model = SMC2(ssm=my_ssm_model, prior=my_prior, data=window)
+    my_alg = SMC(fk=my_fk_model, N=N, store_history=True)
+    my_alg.run()
+    return my_alg 
 
 
 def estimate_a1_a2_on_window(window, N=500, M=10, epsilon=0.1, alpha=0.5):
