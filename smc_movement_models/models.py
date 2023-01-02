@@ -95,7 +95,7 @@ class MarineSSM(StateSpaceModel):
         a2t = Normal(loc=self.a2, scale=self.sigma_v)  # a2_t
         return IndepProd(zt, ztm, a1t, a2t)
 
-    def PX(self, t, xp):  # dist of X_t at time t, given X_{t-1}
+    def PX(self, xp):  # dist of X_t at time t, given X_{t-1}
         loc = xp[:, 2] * xp[:, 0] + xp[:, 3] * xp[:, 1]
         zt = Mixture(  # z_t (mixture)
             [self.c1, self.c2],
@@ -107,7 +107,7 @@ class MarineSSM(StateSpaceModel):
         a2t = Normal(loc=xp[:, 3], scale=self.sigma_v)  # a2_t
         return IndepProd(zt, ztm, a1t, a2t)
 
-    def PY(self, t, xp, x):  # dist of Y_t at time t, given X_t and X_{t-1}
+    def PY(self, x):  # dist of Y_t at time t, given X_t and X_{t-1}
         return Normal(loc=x[:, 0], scale=self.sigma_o)
 
 
@@ -147,7 +147,7 @@ class MarineSSM_SMC2(StateSpaceModel):
         ztm = Normal(loc=xp[:, 0], scale=0.0)  # z_{t-1} (0 variance)
         return IndepProd(zt, ztm)
 
-    def PY(self, t, xp, x):  # dist of Y_t at time t, given X_t and X_{t-1}
+    def PY(self, x):  # dist of Y_t at time t, given X_t and X_{t-1}
         return Normal(loc=x[:, 0], scale=self.sigma_o)
 
 
@@ -164,7 +164,7 @@ def get_windows(day, overlap_size=156):
 
 
 def estimate_variances(window, nlag=60, n_estimates=8):
-    acvf = acovf(window, nlag=60)
+    acvf = acovf(window, nlag=nlag)
     x = np.arange(n_estimates + 1)
     y = acvf[: n_estimates + 1]
     coeffs = np.polyfit(x[1:], y[1:], 2)
@@ -215,13 +215,15 @@ def run_smc(window, N=500, **kwargs):
     return my_alg
 
 
-def run_smc2(window, N=200, **kwargs):
-    my_ssm_model = MarineSSM_SMC2(z0=window[0], z1=window[1], **kwargs)
-    my_prior = StructDist({"prior": Normal(scale=0.1)})
-    my_fk_model = SMC2(ssm=my_ssm_model, prior=my_prior, data=window)
+def run_smc2(window, N=10):
+    global fenetre
+    fenetre = window
+    my_ssm_model = MarineSSM_SMC2
+    my_prior = StructDist({"a1":Normal(scale=0.1), "a2":Normal(scale=0.1)})
+    my_fk_model = SMC2(ssm_cls=my_ssm_model, prior=my_prior, data=window, init_Nx=5, ar_to_increase_Nx=0.1)
     my_alg = SMC(fk=my_fk_model, N=N, store_history=True)
     my_alg.run()
-    return my_alg
+    return my_alg 
 
 
 def estimate_a1_a2_on_window(
@@ -317,3 +319,12 @@ def estimate_a1_a2_on_all_windows(
     time_results["rolling_a2s"] = time_results["a2s"].rolling(window=5, center=True).mean()
 
     return time_results
+
+def estimate_a1_a2_on_window_SMC2(window):
+    alg = run_smc2(window = window)
+    wgts = np.array([w.W for w in alg.hist.wgts])
+    a_temp = np.array([x.theta for x in alg.hist.X])
+    a1s_temp = a_temp['a1']
+    a2s_temp = a_temp['a2']
+    return np.average(a1s_temp, weights=wgts, axis=1), np.average(a2s_temp, weights=wgts, axis=1)
+    
