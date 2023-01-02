@@ -8,8 +8,8 @@ import click
 import pandas as pd
 
 RAW_DATA_PATH = "./data/4121_filtervelocity_PostThesis.csv"
-DAY = "19/01/2008"
-DAY_PATH = "./data/19_01_2008.csv"
+DAY = "18/01/2008"
+DAY_PATH = "./data/18_01_2008.csv"
 OUTPUT_TOTAL_PATH = "./data/clean_data.csv"
 SUMMARY_PATH = "./data/summary.csv"
 
