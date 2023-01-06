@@ -27,7 +27,7 @@ Le module `process_data.py` contient des fonctions utilitaires pour traiter les 
 
 Les notebooks sont dans le dossier `notebooks` et permettent de lancer les expériences et de visualiser les résultats.
 
-Le notebook `notebooks/simulation_papier.ipynb` contient les expériences avec l'algorithme du papier.
+Le notebook `notebooks/implementation_papier.ipynb` contient les expériences avec l'algorithme du papier.
 
 Le notebook `notebooks/implementation_smc2.ipynb` contient les expériences avec la version SMC2.
 
